@@ -1,0 +1,4 @@
+interface:
+  display_name: "Autonomous Development"
+  short_description: "Run specification-driven development through tests and knowledge capture"
+  default_prompt: "Use autonomous-dev to complete or resume this feature in the current repository."
