@@ -1,6 +1,6 @@
 # F001：OpenCode 自驱动开发工作流详细设计
 
-日期：2026-10-27；关联：[特性文档](feature.md)；状态：待审阅。
+日期：2026-10-27；关联：[特性文档](feature.md)；状态：已确认；首版实现及本地验证完成，用户环境实机待验。
 
 ## 一、架构与方案选择
 
@@ -128,3 +128,13 @@ Windows 实机检查包含：带空格与中文路径、安装/重复安装、Sk
 ## 十二、设计检查记录
 
 2026-10-27：独立只读检查提出“单次调用”的持久化边界和扣费协议缺失。已在第五、七节补充 call_id、begin-call、attempt_id、执行前原子扣费、重复 start 幂等、恢复不重置和显式重置修复预算，并在实施 Task 3 添加对应测试。此为设计检查记录，不是运行验证结论。
+
+## 十三、实施时细化的契约
+
+- 特性目录新增 acceptance.json：schema_version=1、criteria 数组；每项 id、verification_ids、downstream。AC 必须完整、唯一，引用必需验证并匹配 real/mock/none。
+- state 另存 spec_fingerprint、design_fingerprint、plan_fingerprint；恢复检测规格变化回 specify 并增加 revision，设计变化回 design，计划变化回 plan。
+- 新增 `unblock <id> --index <n> --reason <text>` 和 `consolidate-knowledge <id>`，分别显式解除阻塞、持久化去重后的知识和索引。
+- 安装备份与 staging 位于 `.opencode/autonomous-dev-backups/`，不在 Skill 发现树中。
+- Windows 锁探测使用同步查询句柄，不向待检查进程发送信号；不确定时保留锁。
+- 声明的验证产物记录执行前时间/大小/哈希，未在本次生成或更新的旧产物不能通过验证。
+- 上述机制的回归与限制见 [验证记录](../../verification.md)。
